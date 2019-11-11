@@ -1,19 +1,16 @@
-from umqtt.simple import MQTTClient
-import time
+import paho.mqtt.client as mqtt
 
-SERVER = '192.168.2.95'
-CLIENT_ID = 'ESP8266'
-TOPIC = b'instruction'
+def on_message(client, userdata, msg):    
+    print('topic: {}'.format(msg.topic))
+    print('message: {}'.format(str(msg.payload)))
 
-def mqtt_callback(topic,msg):
-    print('topic: {}'.format(topic))
-    print('message: {}'.format(msg))
+client = mqtt.Client()
+client.on_message = on_message
 
-client = MQTTClient(CLIENT_ID,SERVER)
-client.set_callback(mqtt_callback)
-client.connect()
-client.subscribe(TOPIC)
+HOST_IP = 'localhost' 
+HOST_PORT = 1883 
+TOPIC_ID = 'instruction' 
 
-while True:
-    client.check_msg()
-    time.sleep(1)
+client.connect(HOST_IP, HOST_PORT, 60)
+client.subscribe(TOPIC_ID)
+client.loop_forever()
