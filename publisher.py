@@ -1,14 +1,17 @@
-from umqtt.simple import MQTTClient
+import paho.mqtt.client as mqtt
 import time
 
-SERVER = '192.168.2.95'
-CLIENT_ID = 'ESP8266' # 客户端的ID
-TOPIC = b'instruction' # TOPIC的ID
+HOST_IP = 'localhost' 
+HOST_PORT = 1883 
+TOPIC_ID = 'instruction' 
 
-client = MQTTClient(CLIENT_ID, SERVER)
-client.connect()
+client = mqtt.Client()
+client.connect(HOST_IP, HOST_PORT, 60)
 
-
+count = 0
 while True:
-    client.publish(TOPIC, 'helloworld')
+    count += 1    
+    message = 'Instruction,{}'.format(count)       
+    client.publish(TOPIC_ID, message)    
+    print('SEND: {}'.format(message))
     time.sleep(1)
